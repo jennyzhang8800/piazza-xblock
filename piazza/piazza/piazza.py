@@ -35,8 +35,7 @@ class PiazzaXBlock(XBlock):
         frag = Fragment(html.format(self=self))
         frag.add_css(self.resource_string("static/css/piazza.css"))
         frag.add_javascript(self.resource_string("static/js/src/piazza.js"))
-        frag.add_javascript(self.resource_string("handlebars-v3.0.3.js"))
-        frag.add_javascript(self.resource_string("jquery-1.11.3.min.js"))
+
         frag.initialize_js('PiazzaXBlock')
         return frag
 
