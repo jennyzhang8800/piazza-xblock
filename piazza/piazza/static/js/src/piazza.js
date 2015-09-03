@@ -5,7 +5,7 @@ function PiazzaXBlock(runtime, element) {
 
 }
 function button_fullscreen() {
-    var frame = document.getElementById("codeview");
+    var frame = document.getElementById("iframepage");
     if (frame.requestFullscreen) {
         frame.requestFullscreen();
     }
