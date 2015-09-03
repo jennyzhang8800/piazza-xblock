@@ -1,23 +1,18 @@
 /* Javascript for PiazzaXBlock. */
 function PiazzaXBlock(runtime, element) {
 
-    function updateCount(result) {
-        $('.count', element).text(result.count);
+
+
+}
+function button_fullscreen() {
+    var frame = document.getElementById("codeview");
+    if (frame.requestFullscreen) {
+        frame.requestFullscreen();
     }
-
-    var handlerUrl = runtime.handlerUrl(element, 'increment_count');
-
-    $('p', element).click(function(eventObject) {
-        $.ajax({
-            type: "POST",
-            url: handlerUrl,
-            data: JSON.stringify({"hello": "world"}),
-            success: updateCount
-        });
-    });
-
-
-    $(function ($) {
-
-    });
+    else if (frame.mozRequestFullScreen) {
+        frame.mozRequestFullScreen();
+    }
+    else if (frame.webkitRequestFullscreen) {
+        frame.webkitRequestFullscreen();
+    }
 }
