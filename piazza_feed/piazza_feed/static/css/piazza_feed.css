@@ -1,9 +1,2 @@
 /* CSS for PiazzaFeedXBlock */
 
-.piazza_feed_block .count {
-    font-weight: bold;
-}
-
-.piazza_feed_block p {
-    cursor: pointer;
-}

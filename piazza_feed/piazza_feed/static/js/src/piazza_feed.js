@@ -1,20 +1,18 @@
 /* Javascript for PiazzaFeedXBlock. */
 function PiazzaFeedXBlock(runtime, element) {
 
-    function updateCount(result) {
-        $('.count', element).text(result.count);
+    function button_fullscreen() {
+        var frame = document.getElementById("iframepage");
+        if (frame.requestFullscreen) {
+            frame.requestFullscreen();
+        }
+        else if (frame.mozRequestFullScreen) {
+            frame.mozRequestFullScreen();
+        }
+        else if (frame.webkitRequestFullscreen) {
+            frame.webkitRequestFullscreen();
+        }
     }
-
-    var handlerUrl = runtime.handlerUrl(element, 'increment_count');
-
-    $('p', element).click(function(eventObject) {
-        $.ajax({
-            type: "POST",
-            url: handlerUrl,
-            data: JSON.stringify({"hello": "world"}),
-            success: updateCount
-        });
-    });
 
     $(function ($) {
         /* Here's where you'd do things on page load. */
