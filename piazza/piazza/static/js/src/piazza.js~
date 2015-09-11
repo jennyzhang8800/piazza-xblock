@@ -16,10 +16,3 @@ function button_fullscreen() {
         frame.webkitRequestFullscreen();
     }
 }
-
-function click_select_show(value) {
-
-document.getElementById("iframepage").src = value;
-
-}
- 
