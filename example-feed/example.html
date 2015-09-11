@@ -42,10 +42,10 @@
                 <!-- 下拉菜单-->
                  <li>
                  <label>按标签筛选</label>
-                <select name="select_label" id="select_label" >
+                <select name="select_label" id="select_label" onchange="click_select_label(this)" >
                    {{#with result.tags.instructor}}
                       {{#each this}}
-                        <option value="{{this}}" onclick="click_select_label(value)">{{this}}</option>
+                        <option value="{{this}}" >{{this}}</option>
                      {{/each}}                          
                    {{/with}}
                    

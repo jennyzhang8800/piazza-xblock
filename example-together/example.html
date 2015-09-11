@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -45,10 +45,10 @@
                 <!-- 下拉菜单-->
               <li >
                 <label>按标签筛选</label>
-                <select name="select_label" id="select_label" >
+                <select name="select_label" id="select_label" onchange="click_select_label(this)" >
                    {{#with result.tags.instructor}}
                       {{#each this}}
-                        <option value="{{this}}" onclick="click_select_label(value)">{{this}}</option>
+                        <option value="{{this}}" >{{this}}</option>
                      {{/each}}                          
                    {{/with}}
                    

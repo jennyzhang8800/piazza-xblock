@@ -43,12 +43,12 @@ $(document).ready(function(){
                     var html_feed = template_feed(data_json);
                     $("#popular_tags_bar").html(html_feed);}
             });
-     
 
-   
+
+
+
 
 });
-
 
 
 //点击列出的标签，显示对应的feed部分
@@ -71,7 +71,10 @@ $(document).ready(function(){
 
 
 //下拉菜单列出所有标签,选择后显示在feed部分
-function click_select_label(label){ 
+function click_select_label(obj){
+    var opt = obj.options[obj.selectedIndex]
+
+    var label=opt.text;
   url_github="https://raw.githubusercontent.com/xyongcn/piazza-data-tsinghua.edu.cn_spring2015_30240243x/master/data/piazza-data-filter/filter_feed_"+label +".json";
             $.ajax({
                 type : "get",

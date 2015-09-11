@@ -17,9 +17,11 @@ function button_fullscreen() {
     }
 }
 
-function click_select_show(value) {
+function click_select_show(obj) {
+var opt = obj.options[obj.selectedIndex]
 
-document.getElementById("iframepage").src = value;
+   
+document.getElementById("iframepage").src = opt.value;
 
 }
  

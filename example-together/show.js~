@@ -1,7 +1,0 @@
-
-function click_select_show(value) {
-alert(value);
-document.getElementById("piazza_show").src = value;
-
-}
- 
