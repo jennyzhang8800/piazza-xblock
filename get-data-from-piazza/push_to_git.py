@@ -6,7 +6,7 @@ import time
 
 
 upd_time=time.strftime(r"%Y-%m-%d_%H:%M:%S",time.localtime())
-os.chdir('/home/yannizhang/piazza-xblock')
+os.chdir('/home/zyni/piazza-xblock')
 os.system('git add .')
 os.system('git commit -am "%s %s"' %("update at:",upd_time))
 p=pexpect.spawn('git push')
