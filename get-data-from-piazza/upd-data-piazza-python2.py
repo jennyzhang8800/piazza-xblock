@@ -1,5 +1,5 @@
 # -*- coding:utf-8 -*-
-# !/usr/bin/python
+# !/usr/bin/python
 __author__ = 'zhangyanni'
 
 
@@ -31,7 +31,7 @@ def ungzip(data):
 #自动在发出的 GET 或者 POST 请求中加上自定义的 Header
 cookieJar = cookielib.CookieJar()
 urlOpener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookieJar))
-urllib2.install_opener(urlOpener)
+urllib2.install_opener(urlOpener)
 def piazza_login():
     header = {
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -61,7 +61,9 @@ def piazza_login():
         #登录到piazza，并get登录后的网页保存在piazza_logindata.txt
         data=data.decode(encoding='UTF-8',errors='ignore')
         saveFile("piazza-login-data",data)
-        FileSize=os.path.getsize("piazza-data/piazza-login-data.json")
+        FileSize=os.path.getsize("/home/zyni/piazza-data/piazza-login-data.json")
+
+
         if (FileSize > 150000):
             print("登录成功！")
             break
@@ -113,7 +115,7 @@ def piazza_getdata_from_api(postJson):
 
 #保存数据到文件中  
 def saveFile(file_name,data):
-    output = codecs.open("piazza-data/"+file_name+".json",'w',"utf-8")
+    output = codecs.open("/home/zyni/piazza-data/"+file_name+".json",'w',"utf-8")
     output.write(data)
     output.close()   
     print("already write to "+file_name+".json")
@@ -125,17 +127,17 @@ def readFile(file_name):
     return data
 
 #调用函数登录到piazza
-print("----------------------------- login piazza----------------------------------")
+print("----------------------------- login piazza----------------------------------")
 piazza_login()
 print("-----------------------------开始更新数据----------------------------------")
-print("正在获取查询列表，请稍等...")
+print("正在获取查询列表，请稍等...")
 postJson={"method":"network.get_my_feed","params":{"nid":"i5j09fnsl7k5x0","sort":"updated"}}
 data=piazza_getdata_from_api(postJson)
 saveFile("piazza_my_feed",data)
-print("正在检查更新，请稍等...")
-#获得今天的时间
+print("正在检查更新，请稍等...")
+#获得今天的时间
 cur_time=time.strftime(r"%Y-%m-%d",time.localtime())
-data=readFile("piazza-data/piazza_my_feed.json")
+data=readFile("/home/zyni/piazza-data/piazza_my_feed.json")
 #把 json字符串转成字典，便于解析数据
 data_dict=json.loads(data)
 dict = {}
@@ -146,7 +148,7 @@ for item in items:
     id = item['id']
     nr = item['nr']
     modified=item['modified']
-    #今天有更新，则加入请求列表
+    #今天有更新，则加入请求列表
     if modified[0:10]==cur_time[0:10]:
         dict[nr]=id
 print("检查到的更新有：")
