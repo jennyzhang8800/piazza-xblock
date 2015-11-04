@@ -1,4 +1,4 @@
-# -*- coding:utf-8 -*-
+﻿# -*- coding:utf-8 -*-
 # !/usr/bin/python
 __author__ = 'zhangyanni'
 
@@ -18,7 +18,7 @@ import pexpect
 #获得今天的时间
 cur_time=time.strftime(r"%Y-%m-%d,%H:%M:%S",time.localtime())
 #创建日志文件
-filewt = open("/home/zyni/piazza-data/piazza_log.log",'a')
+filewt = open("/home/zyni/piazza-upd/piazza_log.log",'a')
 filewt.write(cur_time+"\n")
 
 #ungzip解压数据
@@ -70,7 +70,7 @@ def piazza_login():
         #登录到piazza，并get登录后的网页保存在piazza_logindata.txt
         data=data.decode(encoding='UTF-8',errors='ignore')
         saveFile("piazza-login-data",data)
-        FileSize=os.path.getsize("/home/zyni/piazza-data/piazza-login-data.json")
+        FileSize=os.path.getsize("/home/zyni/piazza-data/piazza-data/piazza-login-data.json")
 
 
         if (FileSize > 150000):
@@ -124,7 +124,7 @@ def piazza_getdata_from_api(postJson):
 
 #保存数据到文件中  
 def saveFile(file_name,data):
-    output = codecs.open("/home/zyni/piazza-data/"+file_name+".json",'w',"utf-8")
+    output = codecs.open("/home/zyni/piazza-data/piazza-data/"+file_name+".json",'w',"utf-8")
     output.write(data)
     output.close()   
     filewt.write("already write to "+file_name+".json\n")
@@ -178,7 +178,7 @@ data=piazza_getdata_from_api(postJson)
 saveFile("piazza_my_feed",data)
 filewt.write("正在检查更新，请稍等...\n")
 
-data=readFile("/home/zyni/piazza-data/piazza_my_feed.json")
+data=readFile("/home/zyni/piazza-data/piazza-data/piazza_my_feed.json")
 #把 json字符串转成字典，便于解析数据
 data_dict=json.loads(data)
 dict = {}
