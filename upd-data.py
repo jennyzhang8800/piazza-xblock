@@ -13,7 +13,13 @@ import codecs
 import socket
 import os
 import time
+import pexpect
 
+#获得今天的时间
+cur_time=time.strftime(r"%Y-%m-%d,%H:%M:%S",time.localtime())
+#创建日志文件
+filewt = open("/home/zyni/piazza-data/piazza_log.log",'a')
+filewt.write(cur_time+"\n")
 
 #ungzip解压数据
 def ungzip(data):
@@ -22,7 +28,7 @@ def ungzip(data):
         gziper = gzip.GzipFile(fileobj=compressedstream)
         data2=gziper.read()
     except:
-        print('未经压缩, 无需解压')
+        filewt.write("未经压缩, 无需解压\n")
     return data2
 
 
@@ -48,15 +54,18 @@ def piazza_login():
     email = "jennyzhang8800@163.com"
    
     password = "jeny20110607"
-    print('登录中...')
+    filewt.write("登录中...\n")
     postDict = {'from': '/signup','email':email ,'password': password , 'remember': 'on'}
     postData = urllib.urlencode(postDict)   
     url = 'https://piazza.com/class/'   
     loginNum=1
     while 1:
-        req = urllib2.Request(url,postData,header) #生成页面请求的完整数据
-        response=urlOpener.open(req)               #利用opener发送页面请求
-        data=response.read()                       #获取服务器返回的页面信息
+        #生成页面请求的完整数据
+        req = urllib2.Request(url,postData,header)
+        #利用opener发送页面请求
+        response=urlOpener.open(req)
+        #获取服务器返回的页面信息
+        data=response.read()                       
         data = ungzip(data)
         #登录到piazza，并get登录后的网页保存在piazza_logindata.txt
         data=data.decode(encoding='UTF-8',errors='ignore')
@@ -65,14 +74,14 @@ def piazza_login():
 
 
         if (FileSize > 150000):
-            print("登录成功！")
+            filewt.write("登录成功！\n")
             break
         else:
             if loginNum==3:
-                print("三次登录失败，请检查用户名，密码是否正确！")
+                filewt.write("三次登录失败，请检查用户名，密码是否正确！\n")
                 break
             loginNum+=1
-            print("本次登录未成功，正在尝试第"+str(loginNum)+"次登录...")
+            filewt.write("本次登录未成功，正在尝试第"+str(loginNum)+"次登录...\n")
                     
     
 
@@ -110,7 +119,7 @@ def piazza_getdata_from_api(postJson):
                 return '''{"result":"history":{"subject":"","content":"sorry!there is no content"}}'''
             else:
                 tryNum+=1
-                print("timeout!"+"try to get:"+str(tryNum)+"again")
+                filewt.write("timeout!"+"try to get:"+str(tryNum)+"again\n")
                            
 
 #保存数据到文件中  
@@ -118,7 +127,7 @@ def saveFile(file_name,data):
     output = codecs.open("/home/zyni/piazza-data/"+file_name+".json",'w',"utf-8")
     output.write(data)
     output.close()   
-    print("already write to "+file_name+".json")
+    filewt.write("already write to "+file_name+".json\n")
 #读文件
 def readFile(file_name):
     fileIn = codecs.open(file_name,'r',"utf-8")
@@ -126,17 +135,49 @@ def readFile(file_name):
     fileIn.close()
     return data
 
+def push_to_git():
+    filewt.write("push to git ...\n")
+    upd_time=time.strftime(r"%Y-%m-%d_%H:%M:%S",time.localtime())
+    os.chdir('/home/zyni/piazza-data')
+    os.system('git add .')
+    os.system('git commit -am "%s %s"' %("update at:",upd_time))
+    p=pexpect.spawn('git push')
+    filewt.write("git push...")
+    i=p.expect([pexpect.TIMEOUT, 'Username.*'])
+    if i==0:
+        filewt.write("error\n")
+        exit(0)
+    if i==1:
+        filewt.write("Authenticate github...")
+        p.sendline('jennyzhang8800')
+        j=p.expect([pexpect.TIMEOUT,'Password.*:'])
+        if j==1:
+            p.sendline('Jeny20110607')
+            j=p.expect([pexpect.TIMEOUT,'master'])
+            if j==0:
+                filewt.write("timeout!")
+                exit(0)
+            if j==1:
+                filewt.write("already push to github!")
+        else:
+            filewt.write(j)
+
+
+
 #调用函数登录到piazza
-print("----------------------------- login piazza----------------------------------")
+
+
+
+
+filewt.write("------login piazza----\n")
 piazza_login()
-print("-----------------------------开始更新数据----------------------------------")
-print("正在获取查询列表，请稍等...")
+filewt.write("------开始更新数据-----\n")
+filewt.write("正在获取查询列表，请稍等...\n")
 postJson={"method":"network.get_my_feed","params":{"nid":"i5j09fnsl7k5x0","sort":"updated"}}
 data=piazza_getdata_from_api(postJson)
 saveFile("piazza_my_feed",data)
-print("正在检查更新，请稍等...")
-#获得今天的时间
-cur_time=time.strftime(r"%Y-%m-%d",time.localtime())
+filewt.write("正在检查更新，请稍等...\n")
+
 data=readFile("/home/zyni/piazza-data/piazza_my_feed.json")
 #把 json字符串转成字典，便于解析数据
 data_dict=json.loads(data)
@@ -151,19 +192,19 @@ for item in items:
     #今天有更新，则加入请求列表
     if modified[0:10]==cur_time[0:10]:
         dict[nr]=id
-print("检查到的更新有：")
-print(dict.keys())
+
 #根据nr向api发出POST请求获得有今天更新的问题的json数据
-for nr in dict.keys():
-    print(nr)
-    postJson={"method":"content.get","params":{"cid":nr,"nid":"i5j09fnsl7k5x0"}}
-    data=piazza_getdata_from_api(postJson)
-    file_name=str(nr)
-    saveFile(file_name,data)
-
-                   
-
-   
-
-
-
+if len(dict.keys())!=0:
+    filewt.write("检查到:"+str(len(dict.keys()))+"个更新\n")
+    for nr in dict.keys():
+        filewt.write(str(nr))
+        postJson={"method":"content.get","params":{"cid":nr,"nid":"i5j09fnsl7k5x0"}}
+        data=piazza_getdata_from_api(postJson)
+        file_name=str(nr)
+        saveFile(file_name,data)
+        push_to_git()
+        
+if len(dict.keys())==0:
+    filewt.write("没有检查到更新\n")
+    
+filewt.close()
